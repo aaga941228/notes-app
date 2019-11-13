@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #e3e3dc;
+  font-family: 'Roboto',
+    sans-serif;
+}
+
+.container {
+  max-width: 600px;
+  width: 90%;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.plus {
+  font-size: 2rem;
+  margin-right: 1.5rem;
+  background-color: transparent;
+  border: none;
+}
+
+.plus:hover {
+  cursor: pointer;
+}
+
+.plus:active {
+  font-size: 1.5rem;
+}
+
+.notes {
+  padding: 2rem 0;
+}
+
+.note {
+  padding: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  margin: 2rem 0;
+  background-color: #e9eb86;
+  border-radius: 3px;
+  box-shadow: 1px 1px 3px 1px;
+}
+
+.title-x {
+  display: flex;
+}
+
+.close {
+  font-size: 2rem;
+  margin-right: 1rem;
+  background-color: transparent;
+  border: none;
+}
+
+.close:hover {
+  cursor: pointer;
+  outline: none;
+}
+
+.close:active {
+  font-size: 1.5rem;
+  outline: none;
+}
+
+.txt-title {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  background-color: transparent;
+  font-size: 2rem;
+  border: none;
+}
+
+.txt-title:focus {
+  outline: none;
+}
+
+.txt-note {
+  display: block;
+  resize: vertical;
+  width: 100%;
+  background-color: transparent;
+  font-size: 1.5rem;
+  border: none;
+  height: 100px;
+  min-height: 2rem;
+}
+
+.txt-note {
+  outline: none;
+}
