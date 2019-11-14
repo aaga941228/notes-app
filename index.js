@@ -5,10 +5,10 @@ window.addEventListener('load', () => {
   const note = item =>
     (`
     <div class="title-x">
-      <input type="text" value="${item.title}" class="txt-title" />
-      <button class="close">&times;</button>
+      <input type="text" value="${item.title}" id='txt-title-${item.id}' class="txt-title" />
+      <button class="close" id='btn-${item.id}'>&times;</button>
     </div>
-    <textarea type="text" placeholder="${item.note}" class="txt-note"></textarea>
+    <textarea type="text" placeholder="${item.note}" id='txt-note-${item.id}' class="txt-note"></textarea>
     `)
 
   // fetch notes
@@ -31,10 +31,10 @@ window.addEventListener('load', () => {
     const node = document.createElement('div')
     node.innerHTML = note(item)
     node.classList.add('note')
-    node.setAttribute('id', item.id)
     notes.appendChild(node)
     closeNote(node)
-    save(node.childNodes[3], item.id)
+    const txtArea = document.getElementById(`txt-note-${item.id}`)
+    save(txtArea, item.id)
   }
 
   async function addNote() {
@@ -57,9 +57,9 @@ window.addEventListener('load', () => {
       if (event.keyCode === 13) {
         event.preventDefault()
         node.blur()
-        const { parentNode } = node
-        const title = parentNode.childNodes[1].childNodes[1].value
-        const note = parentNode.childNodes[3].value
+        document.body.focus()
+        const title = document.getElementById(`txt-title-${id}`).value
+        const note = document.getElementById(`txt-note-${id}`).value
         const data = {
           title,
           note
