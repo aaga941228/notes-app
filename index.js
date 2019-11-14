@@ -1,6 +1,7 @@
 window.addEventListener('load', () => {
 
   //global variables
+
   const notes = document.getElementById('notes')
   const note = item =>
     (`
@@ -17,6 +18,7 @@ window.addEventListener('load', () => {
     const data = await getNotes()
     data.map(item => {
       createNote(item)
+      console.log(item)
     })
   }
 
@@ -31,10 +33,10 @@ window.addEventListener('load', () => {
     const node = document.createElement('div')
     node.innerHTML = note(item)
     node.classList.add('note')
+    node.setAttribute('id', `note-${item.id}`)
     notes.appendChild(node)
-    closeNote(node)
-    const txtArea = document.getElementById(`txt-note-${item.id}`)
-    save(txtArea, item.id)
+    closeNote(item.id)
+    save(item.id)
   }
 
   async function addNote() {
@@ -42,21 +44,23 @@ window.addEventListener('load', () => {
     createNote(newNote)
   }
 
-  function closeNote(node) {
-    const button = node.childNodes[1].childNodes[3]
+  function closeNote(id) {
+    const button = document.getElementById(`btn-${id}`)
+    const note = document.getElementById(`note-${id}`)
     button.addEventListener('click', e => {
       e.preventDefault()
-      deleteNote(node.getAttribute('id'))
-      const { parentNode } = node
-      parentNode.removeChild(node)
+      deleteNote(id)
+      const { parentNode } = note
+      parentNode.removeChild(note)
     })
   }
 
-  function save(node, id) {
-    node.addEventListener('keyup', () => {
+  function save(id) {
+    const txtArea = document.getElementById(`txt-note-${id}`)
+    txtArea.addEventListener('keyup', () => {
       if (event.keyCode === 13) {
         event.preventDefault()
-        node.blur()
+        txtArea.blur()
         document.body.focus()
         const title = document.getElementById(`txt-title-${id}`).value
         const note = document.getElementById(`txt-note-${id}`).value
