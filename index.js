@@ -1,12 +1,12 @@
 window.addEventListener('load', () => {
-
-  //global variables
-
   const notes = document.getElementById('notes')
+  const message = document.getElementById('message-container')
+  const plus = document.getElementById('plus')
+  plus.addEventListener('click', addNote)
   const note = item =>
     (`
     <div class="title-x">
-      <input type="text" value="${item.title}" id='txt-title-${item.id}' class="txt-title" />
+      <input type="text" value="${item.title}" id='txt-title-${item.id}' class="txt-title"/>
       <button class="close" id='btn-${item.id}'>&times;</button>
     </div>
     <textarea type="text" placeholder="${item.note}" id='txt-note-${item.id}' class="txt-note"></textarea>
@@ -16,18 +16,24 @@ window.addEventListener('load', () => {
 
   async function fetchNotes() {
     const data = await getNotes()
-    data.map(item => {
-      createNote(item)
-      console.log(item)
-    })
+    if (data.length === 0) {
+      addMessage()
+    } else {
+      data.map(item => {
+        createNote(item)
+      })
+    }
   }
 
-  // listeners
-
-  const plus = document.getElementById('plus')
-  plus.addEventListener('click', addNote)
-
   // functions
+
+  function addMessage() {
+    message.style.display = 'flex'
+  }
+
+  function quitMessage() {
+    message.style.display = 'none'
+  }
 
   function createNote(item) {
     const node = document.createElement('div')
@@ -37,11 +43,13 @@ window.addEventListener('load', () => {
     notes.appendChild(node)
     closeNote(item.id)
     save(item.id)
+    sizeTxtArea(item.id)
   }
 
   async function addNote() {
     const newNote = await postNote()
     createNote(newNote)
+    quitMessage()
   }
 
   function closeNote(id) {
@@ -52,6 +60,9 @@ window.addEventListener('load', () => {
       deleteNote(id)
       const { parentNode } = note
       parentNode.removeChild(note)
+      if (parentNode.childElementCount === 1) {
+        addMessage()
+      }
     })
   }
 
@@ -68,9 +79,19 @@ window.addEventListener('load', () => {
           title,
           note
         }
+        const txtAreaHeight = txtArea.offsetHeight
+        localStorage.setItem(`size-${id}`, `${txtAreaHeight}px`)
         putNote(data, id)
       }
     })
+  }
+
+  function sizeTxtArea(id) {
+    const size = localStorage.getItem(`size-${id}`)
+    if (size !== null) {
+      const txtArea = document.getElementById(`txt-note-${id}`)
+      txtArea.style.height = size
+    }
   }
 
   // request functions

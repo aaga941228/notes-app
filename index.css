@@ -6,15 +6,30 @@
 
 body {
   background-color: #e3e3dc;
-  font-family: 'Roboto',
-    sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .container {
   max-width: 600px;
   width: 90%;
-  margin: 2rem auto;
+  margin: auto;
   padding: 2rem;
+  height: 100vh;
+}
+
+.message-container {
+  display: none;
+  justify-content: center;
+}
+
+.message-icon {
+  padding: 0 0.5rem;
+}
+
+.message {
+  font-size: 1.5rem;
+  color: rgba(0, 0, 0, 0.85);
+  display: inline-block;
 }
 
 .title {
@@ -26,7 +41,8 @@ body {
   font-size: 2rem;
   margin-right: 1.5rem;
   background-color: transparent;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
 }
 
 .plus:hover {
@@ -39,6 +55,7 @@ body {
 
 .notes {
   padding: 2rem 0;
+  height: 100%;
 }
 
 .note {
@@ -91,10 +108,10 @@ body {
   background-color: transparent;
   font-size: 1.5rem;
   border: none;
-  height: 100px;
-  min-height: 2rem;
+  min-height: 5rem;
+  outline: none;
 }
 
-.txt-note {
-  outline: none;
+.txt-note:blur {
+  color: black;
 }
