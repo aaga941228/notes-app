@@ -8,7 +8,7 @@ window.addEventListener("load", () => {
       <input type="text" value="${item.title}" id='txt-title-${item.id}' class="txt-title"/>
       <button class="close" id='btn-${item.id}'>&times;</button>
     </div>
-    <textarea type="text" placeholder="${item.note}" id='txt-note-${item.id}' class="txt-note"></textarea>
+    <textarea type="text" id='txt-note-${item.id}' class="txt-note">${item.note}</textarea>
     `;
 
   // fetch notes
@@ -65,23 +65,35 @@ window.addEventListener("load", () => {
     });
   }
 
+  function confirmSave(id) {
+    const txtArea = document.getElementById(`txt-note-${id}`);
+    const title = document.getElementById(`txt-title-${id}`).value;
+    const note = document.getElementById(`txt-note-${id}`).value;
+    const data = {
+      title,
+      note
+    };
+    const txtAreaHeight = txtArea.offsetHeight;
+    localStorage.setItem(`size-${id}`, `${txtAreaHeight}px`);
+    putNote(data, id);
+  }
+
   function save(id) {
     const txtArea = document.getElementById(`txt-note-${id}`);
-    txtArea.addEventListener("keyup", () => {
+    txtArea.addEventListener("keyup", event => {
       if (event.keyCode === 13) {
         event.preventDefault();
-        txtArea.blur();
-        document.body.focus();
-        const title = document.getElementById(`txt-title-${id}`).value;
-        const note = document.getElementById(`txt-note-${id}`).value;
-        const data = {
-          title,
-          note
-        };
-        const txtAreaHeight = txtArea.offsetHeight;
-        localStorage.setItem(`size-${id}`, `${txtAreaHeight}px`);
-        putNote(data, id);
+        confirmSave(id);
       }
+    });
+    txtArea.addEventListener("focus", event => {
+      interval = setInterval(() => {
+        event.preventDefault();
+        confirmSave(id);
+      }, 5000);
+    });
+    txtArea.addEventListener("blur", () => {
+      clearInterval(interval);
     });
   }
 

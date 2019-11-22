@@ -1,0 +1,15 @@
+{
+  "name": "notesAppPWA",
+  "short_name": "Notes",
+  "theme_color": "#e3e3dc",
+  "background_color": "#e3e3dc",
+  "display": "standalone",
+  "start_url": ".",
+  "icons": [
+    {
+      "src": "https://image.flaticon.com/icons/png/512/1344/1344346.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#e3e3dc" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="./manifest.json">
+  <!-- Add iOS meta tags and icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="PWA note">
+  <meta name="description" content="aplication to add, create, update and delete notes">
+  <title>Notes app</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="title">
+      <h1>My notes</h1>
+      <button class="plus" id="plus">&plus;</button>
+    </div>
+    <div class="notes" id="notes">
+      <div class="message-container" id="message-container">
+        <h3 class="message">Click on <i class="message-icon">&plus;</i> to add a new note</h3>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('../sw.js', { scope: './' })
+          .then(reg => {
+            console.log('services worker registered.', reg)
+          })
+          .catch(reg => {
+            console.log('services worker doesn´t registered', reg)
+          })
+      })
+    }
+  </script>
+</body>
+
+</html>
