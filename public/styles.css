@@ -10,10 +10,9 @@ body {
 }
 
 .container {
-  max-width: 600px;
   width: 90%;
   margin: auto;
-  padding: 2rem;
+  padding: 2rem 0;
   height: 100vh;
 }
 
@@ -111,4 +110,31 @@ body {
   min-height: 5rem;
   height: auto;
   outline: none;
+}
+
+@media screen and (min-width: 700px) and (max-width: 1024px) {
+  .note {
+    width: calc(50% - 2rem);
+    float: left;
+    margin: 1rem;
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1400px) {
+  .note {
+    width: calc(33.33% - 2rem);
+    float: left;
+    margin: 1rem;
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .note {
+    width: calc(25% - 2rem);
+    float: left;
+    margin: 1rem;
+    height: auto;
+  }
 }
