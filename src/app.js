@@ -1,10 +1,8 @@
 window.addEventListener("load", () => {
-  window.addEventListener("online", () => {
-    doPendings();
-  });
+  /****************** global variables ***************************/
+
   let counter = 0;
-  const notesService = NotesService();
-  // const requestsQueue = RequestsQueue();
+  // const notesService = NotesService();
   const notes = document.getElementById("notes");
   const message = document.getElementById("message-container");
   const plus = document.getElementById("plus");
@@ -20,7 +18,7 @@ window.addEventListener("load", () => {
   /****************** fetchNotes ***************************/
 
   async function init() {
-    const data = await notesService.getNotes();
+    const data = await NotesService.getNotes();
     if (data.length === 0) {
       addMessage();
     } else {
@@ -31,15 +29,6 @@ window.addEventListener("load", () => {
   }
 
   /****************** functions ***************************/
-
-  const ID = function() {
-    return (
-      "_" +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    );
-  };
 
   function addMessage() {
     message.style.display = "flex";
@@ -61,7 +50,7 @@ window.addEventListener("load", () => {
   }
 
   async function addNote() {
-    const newNote = await notesService.postNote();
+    const newNote = await NotesService.postNote();
     createNote(newNote);
     quitMessage();
   }
@@ -72,7 +61,7 @@ window.addEventListener("load", () => {
     button.addEventListener("click", e => {
       e.preventDefault();
       const { parentNode } = note;
-      notesService.deleteNote(id);
+      NotesService.deleteNote(id);
       parentNode.removeChild(note);
       if (parentNode.childElementCount === 1) {
         addMessage();
@@ -90,7 +79,7 @@ window.addEventListener("load", () => {
     };
     const txtAreaHeight = txtArea.offsetHeight;
     localStorage.setItem(`size-${id}`, `${txtAreaHeight}px`);
-    notesService.putNote(data, id);
+    NotesService.putNote(data, id);
   }
 
   function saveNote(id) {
@@ -120,27 +109,23 @@ window.addEventListener("load", () => {
     }
   }
 
-  /****************** PendingRequets ***************************/
+  /****************** Pendings ***************************/
 
-  // async function doPendingRequets() {
-  //   const req = requestsQueue.dequeue();
-  //   if (requestsQueue.isEmpty()) {
-  //     doPendingRequets();
-  //   }
-  //   return;
-  // }
+  window.addEventListener("online", () => {
+    doPendings();
+  });
 
   async function doPendingRequests(req) {
     const request = JSON.parse(req);
     switch (request.method) {
       case "DELETE":
-        await notesService.deleteNote(request.id);
+        await NotesService.deleteNote(request.id);
         break;
       case "PUT":
-        await notesService.putNote(request.data, request.id);
+        await NotesService.putNote(request.data, request.id);
         break;
       case "POST":
-        await notesService.postNote(request.id);
+        await NotesService.postNote(request.id);
         break;
       default:
         break;
@@ -157,83 +142,6 @@ window.addEventListener("load", () => {
       removePendingRequests(i);
     }
     counter = 0;
-  }
-
-  /****************** NotesService ***************************/
-
-  function NotesService() {
-    async function getNotes() {
-      const res = await fetch("http://localhost:8080");
-      const data = await res.json();
-      return data;
-    }
-
-    async function putNote(data, id) {
-      if (navigator.onLine) {
-        await fetch(`http://localhost:8080/${id}`, {
-          method: "PUT",
-          body: JSON.stringify(data),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-      } else {
-        enqueueRequest({ id, data, method: "PUT" });
-      }
-    }
-
-    async function postNote(id) {
-      if (navigator.onLine) {
-        if (id === undefined) {
-          const response = await fetch(`http://localhost:8080/`, {
-            method: "POST",
-            body: JSON.stringify({ title: "", note: "" }),
-            headers: {
-              "Content-Type": "application/json"
-            }
-          });
-          const res = await response.json();
-          const newNote = {
-            title: "",
-            note: "",
-            id: res.id
-          };
-          return newNote;
-        } else {
-          const response = await fetch(`http://localhost:8080/`, {
-            method: "POST",
-            body: JSON.stringify({ id, title: "", note: "" }),
-            headers: {
-              "Content-Type": "application/json"
-            }
-          });
-          const res = await response.json();
-          return res;
-        }
-      } else {
-        const id = ID();
-        enqueueRequest({ id, method: "POST" });
-        return { id, title: "", note: "" };
-      }
-    }
-
-    async function deleteNote(id) {
-      if (navigator.onLine) {
-        await fetch(`http://localhost:8080/${id}`, {
-          method: "DELETE",
-          headers: { "content-type": "application/json" }
-        });
-      } else {
-        enqueueRequest({ id, method: "DELETE" });
-      }
-    }
-
-    return {
-      getNotes,
-      postNote,
-      putNote,
-      deleteNote
-    };
   }
 
   /****************** RequestsQueue ***************************/
