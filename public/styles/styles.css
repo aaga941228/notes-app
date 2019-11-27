@@ -63,7 +63,8 @@ body {
 }
 
 .txt-note {
-  resize: vertical;
+  overflow: hidden;
+  resize: none;
   background-color: transparent;
   font-size: 1.5rem;
   border: none;

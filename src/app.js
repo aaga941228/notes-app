@@ -17,7 +17,7 @@ window.addEventListener("load", () => {
     </div>
     <div class="row">
     <div class="col-12">
-    <textarea type="text" style="overflow:hidden" id='txt-note-${item.id}' class="txt-note w-100">${item.note}</textarea>
+    <textarea type="text" id='txt-note-${item.id}' class="txt-note w-100">${item.note}</textarea>
     </div>
     </div>
     `;
