@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
 
 body {
@@ -9,42 +9,20 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
-.container {
-  width: 90%;
-  margin: auto;
-  padding: 2rem 0;
-  height: 100vh;
-}
-
-.message-container {
-  display: none;
-  justify-content: center;
-}
-
-.message-icon {
-  padding: 0 0.5rem;
-}
-
 .message {
   font-size: 1.5rem;
   color: rgba(0, 0, 0, 0.85);
-  display: inline-block;
-}
-
-.title {
-  display: flex;
-  justify-content: space-between;
 }
 
 .plus {
   font-size: 2rem;
-  margin-right: 1.5rem;
   background-color: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 3px;
 }
 
 .plus:hover {
+  border: 1px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
 
@@ -52,27 +30,14 @@ body {
   font-size: 1.5rem;
 }
 
-.notes {
-  padding: 2rem 0;
-  height: 100%;
-}
-
 .note {
-  padding: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.3);
-  margin: 2rem 0;
   background-color: #e9eb86;
   border-radius: 3px;
   box-shadow: 1px 1px 3px 1px;
 }
-
-.title-x {
-  display: flex;
-}
-
 .close {
   font-size: 2rem;
-  margin-right: 1rem;
   background-color: transparent;
   border: none;
 }
@@ -88,9 +53,6 @@ body {
 }
 
 .txt-title {
-  display: block;
-  width: 100%;
-  margin-bottom: 1rem;
   background-color: transparent;
   font-size: 2rem;
   border: none;
@@ -101,44 +63,13 @@ body {
 }
 
 .txt-note {
-  display: block;
   resize: vertical;
-  width: 100%;
   background-color: transparent;
   font-size: 1.5rem;
   border: none;
-  min-height: 5rem;
-  height: auto;
   outline: none;
 }
 
-/******* spinner *******/
-
-/******* media queries *******/
-
-@media screen and (min-width: 700px) and (max-width: 1024px) {
-  .note {
-    width: calc(50% - 2rem);
-    float: left;
-    margin: 1rem;
-    height: auto;
-  }
-}
-
-@media screen and (min-width: 1024px) and (max-width: 1400px) {
-  .note {
-    width: calc(33.33% - 2rem);
-    float: left;
-    margin: 1rem;
-    height: auto;
-  }
-}
-
-@media screen and (min-width: 1400px) {
-  .note {
-    width: calc(25% - 2rem);
-    float: left;
-    margin: 1rem;
-    height: auto;
-  }
+.waitingText {
+  color: rgb(255, 200, 0);
 }

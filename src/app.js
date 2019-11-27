@@ -1,50 +1,55 @@
 window.addEventListener("load", () => {
   /****************** global variables ***************************/
-
   let counter = 0;
-  // const notesService = NotesService();
   const notes = document.getElementById("notes");
-  const message = document.getElementById("message-container");
+  const loader = document.getElementById("loader");
+  const message = document.getElementById("message");
   const plus = document.getElementById("plus");
   plus.addEventListener("click", addNote);
   const note = item => `
-    <div class="title-x">
-    <input type="text" value="${item.title}" id='txt-title-${item.id}' class="txt-title"/>
+    <div class="row mw-100 mh-100">
+    <div class="col-10 m-0 pr-0 title-x">
+    <input type="text" value="${item.title}" id='txt-title-${item.id}' class="txt-title mx-0 mw-100"/>
+    </div>
+    <div class="col-2 m-0 p-0">
     <button class="close" id='btn-${item.id}'>&times;</button>
     </div>
-    <textarea type="text" id='txt-note-${item.id}' class="txt-note">${item.note}</textarea>
+    </div>
+    <div class="row">
+    <div class="col-12">
+    <textarea type="text" style="overflow:hidden" id='txt-note-${item.id}' class="txt-note w-100">${item.note}</textarea>
+    </div>
+    </div>
     `;
 
   /****************** fetchNotes ***************************/
-
   async function init() {
     const data = await NotesService.getNotes();
-    if (data.length === 0) {
-      addMessage();
-    } else {
-      data.map(item => {
-        createNote(item);
-      });
-    }
+    data.length === 0
+      ? addMessage()
+      : data.map(item => {
+          createNote(item);
+        });
   }
 
   /****************** functions ***************************/
 
   function addMessage() {
-    message.style.display = "flex";
+    message.classList.remove("d-none");
   }
 
   function quitMessage() {
-    message.style.display = "none";
+    message.classList.add("d-none");
   }
 
   function createNote(item) {
     const node = document.createElement("div");
     node.setAttribute("id", `note-${item.id}`);
+    node.className = "container note m-3 col-sm-5 col-lg-3 col-xl-2";
     node.innerHTML = note(item);
-    node.classList.add("note");
     notes.appendChild(node);
     saveNote(item.id);
+    incrementSize(item.id);
     sizeTxtArea(item.id);
     closeNote(item.id);
   }
@@ -60,10 +65,9 @@ window.addEventListener("load", () => {
     const note = document.getElementById(`note-${id}`);
     button.addEventListener("click", e => {
       e.preventDefault();
-      const { parentNode } = note;
       NotesService.deleteNote(id);
-      parentNode.removeChild(note);
-      if (parentNode.childElementCount === 1) {
+      notes.removeChild(note);
+      if (notes.childElementCount === 0) {
         addMessage();
       }
     });
@@ -109,9 +113,23 @@ window.addEventListener("load", () => {
     }
   }
 
+  function incrementSize(id) {
+    const txtArea = document.getElementById(`txt-note-${id}`);
+    txtArea.addEventListener("keydown", () => {
+      txtArea.style.height = "1px";
+      txtArea.style.height = 32 + txtArea.scrollHeight + "px";
+    });
+  }
+
   /****************** Pendings ***************************/
+  window.addEventListener("offline", () => {
+    loader.classList.remove("d-none");
+    loader.classList.add("d-flex");
+  });
 
   window.addEventListener("online", () => {
+    loader.classList.add("d-none");
+    loader.classList.remove("d-flex");
     doPendings();
   });
 
@@ -131,8 +149,14 @@ window.addEventListener("load", () => {
         break;
     }
   }
+
   function removePendingRequests(id) {
     localStorage.removeItem(`request-${id}`);
+  }
+
+  function enqueueRequest(element) {
+    localStorage.setItem(`request-${counter}`, JSON.stringify(element));
+    counter++;
   }
 
   async function doPendings() {
@@ -141,15 +165,93 @@ window.addEventListener("load", () => {
       await doPendingRequests(req);
       removePendingRequests(i);
     }
-    counter = 0;
+    NotersService.counter = 0;
   }
 
-  /****************** RequestsQueue ***************************/
+  /********************** NotesService *******************************/
+  const NotesService = (function() {
+    async function getNotes() {
+      const res = await fetch("http://localhost:8080/api/notes");
+      const data = await res.json();
+      return data;
+    }
 
-  function enqueueRequest(element) {
-    localStorage.setItem(`request-${counter}`, JSON.stringify(element));
-    counter++;
-  }
+    async function putNote(data, id) {
+      if (navigator.onLine) {
+        await fetch(`http://localhost:8080/api/notes/${id}`, {
+          method: "PUT",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+      } else {
+        enqueueRequest({ id, data, method: "PUT" });
+      }
+    }
+
+    async function postNote(id) {
+      if (navigator.onLine) {
+        if (id === undefined) {
+          const response = await fetch(`http://localhost:8080/api/notes`, {
+            method: "POST",
+            body: JSON.stringify({ title: "", note: "" }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+          const res = await response.json();
+          const newNote = {
+            title: "",
+            note: "",
+            id: res.id
+          };
+          return newNote;
+        } else {
+          const response = await fetch(`http://localhost:8080/api/notes`, {
+            method: "POST",
+            body: JSON.stringify({ id, title: "", note: "" }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+          const res = await response.json();
+          return res;
+        }
+      } else {
+        const id = ID();
+        enqueueRequest({ id, method: "POST" });
+        return { id, title: "", note: "" };
+      }
+    }
+
+    async function deleteNote(id) {
+      if (navigator.onLine) {
+        await fetch(`http://localhost:8080/api/notes/${id}`, {
+          method: "DELETE",
+          headers: { "content-type": "application/json" }
+        });
+      } else {
+        enqueueRequest({ id, method: "DELETE" });
+      }
+    }
+
+    function ID() {
+      return (
+        "_" +
+        Math.random()
+          .toString(36)
+          .substr(2, 9)
+      );
+    }
+
+    return {
+      getNotes,
+      postNote,
+      putNote,
+      deleteNote
+    };
+  })();
 
   /********************** init *******************************/
   init();

@@ -2,9 +2,8 @@ const CACHE_NAME_1 = "static-cache-v1";
 const CACHE_NAME_2 = "dynamic-cache-v1";
 const FILES_TO_CACHE = [
   "./public/index.html",
-  "./public/offline.html",
-  "./public/styles.css",
-  "./public/app.js"
+  "./public/styles/styles.css",
+  "./src/app.js"
 ];
 
 self.addEventListener("install", async () => {
@@ -13,6 +12,9 @@ self.addEventListener("install", async () => {
 });
 self.addEventListener("fetch", event => {
   const req = event.request;
+  if (req.method !== "GET") {
+    return;
+  }
   const url = new URL(req.url);
   if (url.origin === location.url) {
     event.respondWith(cacheFirst(req));
@@ -30,7 +32,8 @@ const networkFirst = async req => {
     const res = await fetch(req);
     cache.put(req, res.clone());
     return res;
-  } catch (error) {
+  } catch (err) {
+    console.log(err);
     return await cache.match(req);
   }
 };
