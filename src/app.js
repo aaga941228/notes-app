@@ -45,7 +45,7 @@ window.addEventListener("load", () => {
   function createNote(item) {
     const node = document.createElement("div");
     node.setAttribute("id", `note-${item.id}`);
-    node.className = "container note m-3 col-sm-5 col-lg-3 col-xl-2";
+    node.className = "container note m-1 col-sm-6 col-lg-4 col-xl-3";
     node.innerHTML = note(item);
     notes.appendChild(node);
     saveNote(item.id);
